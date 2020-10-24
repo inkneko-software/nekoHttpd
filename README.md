@@ -14,7 +14,7 @@
 - C++ boost 1.6
 
   ```bash
-  $ apt-get install libboost1.65-all-dev
+  $ sudo apt-get install libboost1.65-all-dev
   ```
 
 - openssl 1.11.1h
