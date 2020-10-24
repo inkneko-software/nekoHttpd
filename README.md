@@ -29,7 +29,9 @@
 ##### 安装
 
 默认情况下CMAKE_INSTALL_PREFIX=/usr/local/
+
 `libtinyHttpd.so`文件会安装到`${CMAKE_INSTALL_PREFIX}/lib/`
+
 头文件安装到`${CMAKE_INSTALL_PREFIX}/include/tinyHttpd/`
 
  - 创建一个build文件夹并进入
@@ -47,4 +49,6 @@
    ```
 
 ##### 使用
-见[example](./example)文件夹。所使用到的配置文件见[conf](./conf)
+见[example](./example)
+
+所使用到的配置文件见[conf](./conf)
