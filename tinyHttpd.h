@@ -3,13 +3,23 @@
 #include <set>
 #include <memory>
 #include <fstream>
+#include <functional>
 #include "netinet/in.h"
 #include <ctime>
 
 #include "HTTPPacket.h"
 
+#ifndef ROUTE_CALLBACK
+	#define ROUTE_CALLBACK [this](int clientfd, HTTPPacket::HTTPRequestPacket request)->HTTPPacket::HTTPResponsePacket
+#endif
 class TinyHttpd
 {
+protected:
+	/*!
+	服务路由表
+	每一项由<请求路径, 回调函数>构成。
+	*/
+	std::map<std::string, std::function<HTTPPacket::HTTPResponsePacket(int clientfd, HTTPPacket::HTTPRequestPacket)>> routeTable;
 public:
 	/*!
 	用于服务器的配置文件读取
