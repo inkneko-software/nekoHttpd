@@ -10,13 +10,16 @@ link_directories(${OPENSSL_LIB_DIR})
 target_link_libraries (tinyHttpd crypto)
 
 # installation
-
-## lib binary
+## header files
+install(FILES HTTPPacket.h webstring.h tinyHttpd.h
+DESTINATION include/tinyHttpd/
+)
 install(TARGETS tinyHttpd
 LIBRARY DESTINATION lib
 )
 
-## header files
-install(FILES HTTPPacket.h webstring.h tinyHttpd.h
-DESTINATION include/tinyHttpd/
+#light weight webstring library output
+add_library(webstring SHARED webstring.cpp)
+install(TARGETS webstring
+LIBRARY DESTINATION lib
 )
