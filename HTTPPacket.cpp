@@ -6,6 +6,8 @@
 
 namespace HTTPPacket
 {
+	const std::string ContentType::JSON = "application/json; charset=utf8";
+
 	std::map<std::string, std::string> HTTPRequestPacket::ParseURLParamter()
 	{
 		using namespace std;

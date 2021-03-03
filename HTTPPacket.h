@@ -7,6 +7,11 @@
 
 namespace HTTPPacket
 {
+	class ContentType{
+	public:
+		static const std::string JSON;
+	};
+
 	enum class ResponseCode : unsigned int {
 		OK = 200,
 		Created = 201,
