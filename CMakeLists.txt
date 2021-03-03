@@ -1,8 +1,10 @@
 cmake_minimum_required (VERSION 3.5)
 
+project(tinyHttpd)
+
 set (CMAKE_CXX_STANDARD 11)
 aux_source_directory (. SOURCE_TINYHTTPD)
-add_library (tinyHttpd SHARED ${SOURCE_TINYHTTPD})
+add_library (tinyHttpd STATIC ${SOURCE_TINYHTTPD})
 
 # for openssl dependences
 set(OPENSSL_LIB_DIR /usr/local/lib/)
@@ -19,7 +21,7 @@ LIBRARY DESTINATION lib
 )
 
 #light weight webstring library output
-add_library(webstring SHARED webstring.cpp)
+add_library(webstring STATIC webstring.cpp)
 install(TARGETS webstring
 LIBRARY DESTINATION lib
 )
