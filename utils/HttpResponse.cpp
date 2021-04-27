@@ -4,6 +4,7 @@ namespace nekohttpd
 {
 
 const std::string ContentType::JSON = "application/json; charset=utf8";
+const std::string ContentType::HTML_UTF8 = "text/html; charset=utf8";
 
 void HttpResponse::addHeader(std::string name, std::string value)
 {
@@ -52,6 +53,17 @@ std::string HttpResponse::getHeader(std::string name)
     return "";
 }
 
+void HttpResponse::setContentType(const std::string &contentType)
+{
+    setHeader("Content-Type", contentType);
+}
+
+void HttpResponse::setServerSignature(const std::string& name)
+{
+    setHeader("Server", name);
+}
+
+
 void HttpResponse::setContent(std::string content)
 {
     body_ = content;
@@ -64,8 +76,7 @@ void HttpResponse::appendContent(std::string content)
 
 std::string HttpResponse::HttpResponse::toString()
 {
-    setHeader("content-length", std::to_string(body_.size()));
-    setHeader("server", serverSignature_);
+    setHeader("Content-Length", std::to_string(body_.size()));
     std::stringstream stream;
     stream << std::noskipws;
     stream << version_ << " " << status_ << " " << translateStatusCode(status_) << "\r\n";

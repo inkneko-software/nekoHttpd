@@ -8,16 +8,18 @@ namespace nekohttpd
 
 class ContentType{
 public:
+	static const std::string HTML_UTF8;
 	static const std::string JSON;
 }; 
+
+
 class HttpResponse
 {
 public:
-
-	HttpResponse(std::string servername = "nekoHttpd/0.1") : serverSignature_(servername) {}
-    enum HttpResponseStatus
-    {
-        k200OK = 200,
+	HttpResponse() = default;
+	enum HttpResponseStatus
+	{
+		k200OK = 200,
 		k201Created = 201,
 		k202Accepted = 202,
 		k301MovedPermanently = 301,
@@ -32,7 +34,7 @@ public:
 		k501NotImplemented = 501,
 		k502BadGateway = 502,
 		k503ServiceUnavailable = 503
-    };
+	};
 
 	/**
 	 * @brief
@@ -114,6 +116,22 @@ public:
 
 	/**
 	 * @brief 
+	 * set response content-type
+	 * @param contentType
+	 * 				the content type
+	 */
+	void setContentType(const std::string &contentType);
+
+
+	/**
+	 * @brief 
+	 * set header field [server]
+	 * @param name 
+	 * 				the server name
+	 */
+	void setServerSignature(const std::string& name);
+	/**
+	 * @brief 
 	 * set message.
 	 * @param content 
 	 * 				the content to be set as message.
@@ -138,7 +156,6 @@ public:
 private:
     HttpResponseStatus status_ = k200OK;
     std::multimap<std::string, std::string> headers_;
-	std::string serverSignature_;
 	std::string body_;
 	std::string version_ = "HTTP/1.1";
 

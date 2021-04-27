@@ -8,6 +8,9 @@ namespace nekohttpd
 class HttpRequest
 {
 public:
+    HttpRequest(const std::string& clientAddr, const uint16_t& port)
+    : clientAddr_(clientAddr), port_(port)
+    {}
     /**
      * @brief
      * get request method.
@@ -89,6 +92,20 @@ public:
      */
     std::vector<std::string> getParameterNames();
 
+    /**
+     * @brief
+     * get remote host info.
+     * @return std::pair<std::string, uint16_t> 
+     *              ipaddr, port
+     */
+    std::pair<std::string, uint16_t> getRemoteHost();
+
+    /**
+     * @brief
+     * get remote host ip:port in str
+     * @return std::string ip:port
+     */
+    std::string getRemoteIPPort();
 
     //session module
     //HttpSession getSession(bool create = false);
@@ -109,12 +126,15 @@ public:
 
     ProfilerStatus httpProfiler(const std::string &buffer);
 private:
+    std::string clientAddr_;
+    uint16_t port_;
+
     ProfilerStatus status_;
     std::string method_;
     std::string version_;
     std::string requestURI_;
     std::string requestURL_;
-    std::string queryString;
+    std::string queryString_;
     std::multimap<std::string, std::string> headers_;
     std::string body_;
     std::multimap<std::string, std::string> parameters_;

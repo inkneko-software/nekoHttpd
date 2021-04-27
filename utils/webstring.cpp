@@ -62,7 +62,7 @@ namespace webstring
 		return result;
 	}
 
-	std::string LeftStrip(const std::string& str, const std::string chr)
+	std::string lstrip(const std::string& str, const std::string chr)
 	{
 		std::string result(str);
 		bool found = false;
@@ -90,7 +90,7 @@ namespace webstring
 		return result;
 	}
 
-	std::string RightStrip(const std::string& str, const std::string chr)
+	std::string rstrip(const std::string& str, const std::string chr)
 	{
 		std::string result(str);
 		bool found = false;
@@ -119,40 +119,20 @@ namespace webstring
 
 	std::string tolower(const std::string& str)
 	{
-		std::string result;
-		for (auto c : str)
-		{
-			if ((c >= 'A') && (c <= 'Z'))
-			{
-				result += c + 32;
-			}
-			else
-			{
-				result += c;
-			}
-		}
-		return result;
+		std::string ret;
+		std::transform(str.cbegin(), str.cend(), ret.begin(), [](unsigned char c) { return std::tolower(c); });
+		return ret;
 	}
 
 	std::string toupper(const std::string& str)
 	{
-		std::string result;
-		for (auto c : str)
-		{
-			if ((c >= 'a') && (c <= 'z'))
-			{
-				result += c - 32;
-			}
-			else
-			{
-				result += c;
-			}
-		}
-		return result;
+		std::string ret;
+		std::transform(str.cbegin(), str.cend(), ret.begin(), [](unsigned char c) { return std::toupper(c); });
+		return ret;
 	}
 
 
-	std::string URLdecode(std::string text)
+	std::string urldecode(std::string text)
 	{
 		//这vector用的..凑合着用吧，还能离不成
 		std::vector<char> convertedBytes;
@@ -192,7 +172,7 @@ namespace webstring
 		return std::string(convertedBytes.data(), convertedBytes.size());
 	}
 
-	std::string URLencode(std::string text)
+	std::string urlencode(std::string text)
 	{
 		std::string convertedBytes;
 		std::string temp;
@@ -242,7 +222,7 @@ namespace webstring
 
 	//http://www.zedwood.com/article/cpp-utf-8-mb_substr-function
 	//没有进行代码审计
-	std::string UTF8Substr(const std::string& str, unsigned int start, unsigned int leng)
+	std::string UTF8Substr(const std::string& str, size_t start, size_t leng)
 	{
 		using std::string;
 		if (leng == 0) { return ""; }
@@ -252,8 +232,8 @@ namespace webstring
 			if (q == start) { min = i; }
 			if (q <= start + leng || leng == string::npos) { max = i; }
 
-			c = (unsigned char)str[i];
-			if (c >= 0 && c <= 127) i += 0;
+			c = static_cast<unsigned char>(str[i]);
+			if (c <= 127) i += 0;
 			else if ((c & 0xE0) == 0xC0) i += 1;
 			else if ((c & 0xF0) == 0xE0) i += 2;
 			else if ((c & 0xF8) == 0xF0) i += 3;
@@ -320,10 +300,10 @@ namespace webstring
 		return result;
 	}
 
-	std::string md5(std::string text)
+	std::string md5(std::vector<uint8_t> content)
 	{
 		std::unique_ptr<unsigned char> digest(new unsigned char[MD5_DIGEST_LENGTH]());
-		MD5((unsigned char*)text.c_str(), text.length(), digest.get());
+		MD5(content.data(), content.size(), digest.get());
 
 		std::stringstream hexdigest;
 		hexdigest << std::hex;
@@ -335,10 +315,10 @@ namespace webstring
 		return hexdigest.str();
 	}
 
-	std::string sha1(std::string text)
+	std::string sha1(std::vector<uint8_t> content)
 	{
 		std::unique_ptr<unsigned char> digest(new unsigned char[SHA_DIGEST_LENGTH]());
-		SHA1((unsigned char*)text.c_str(), text.length(), digest.get());
+		SHA1(content.data(), content.size(), digest.get());
 
 		std::stringstream hexdigest;
 		hexdigest << std::hex;
@@ -350,13 +330,13 @@ namespace webstring
 		return hexdigest.str();
 	}
 
-	std::string GenUUID()
+	std::string genUUID()
 	{
 		boost::uuids::uuid uuid = boost::uuids::random_generator()();
 		return boost::uuids::to_string(uuid);
 	}
 
-	std::string GenTimeStamp()
+	std::string genTimestamp()
 	{
 		time_t currentTime = time(nullptr);
 		return (currentTime == -1) ? "0" : std::to_string(currentTime);
@@ -385,7 +365,7 @@ namespace webstring
 
 	//copy from https://stackoverflow.com/questions/46349697/decode-base64-string-using-boost
 	//without code review
-	std::string Base64Decode(std::string input)
+	std::string b64decode(std::string input)
 	{
 		using namespace boost::archive::iterators;
 		typedef transform_width<binary_from_base64<remove_whitespace<std::string::const_iterator> >, 8, 6> ItBinaryT;
@@ -409,13 +389,13 @@ namespace webstring
 	}
 
 	//copy from https://stackoverflow.com/questions/10521581/base64-encode-using-boost-throw-exception
-	std::string Base64Encode(std::string input)
+	std::string b64encode(std::string input)
 	{
 		using namespace boost::archive::iterators;
 		typedef base64_from_binary<transform_width<std::string::const_iterator
 			, 6, 8> > base64_text;
 
-		unsigned int writePaddChars = (3 - input.length() % 3) % 3;
+		size_t writePaddChars = (3 - input.length() % 3) % 3;
 		std::string base64(base64_text(input.begin()), base64_text(input.end()));
 
 		base64.append(writePaddChars, '=');

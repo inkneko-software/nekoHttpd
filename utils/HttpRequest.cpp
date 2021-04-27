@@ -86,7 +86,7 @@ std::string HttpRequest::getRequestURL()
 
 std::string HttpRequest::getQueryString()
 {
-    return queryString;
+    return queryString_;
 }
 
 std::string HttpRequest::getParameter(std::string name)
@@ -119,6 +119,16 @@ std::vector<std::string> HttpRequest::getParameterNames()
         names.push_back(iter->first);
     }
     return names;
+}
+
+std::pair<std::string, uint16_t> HttpRequest::getRemoteHost()
+{
+    return {clientAddr_, port_};
+}
+
+std::string HttpRequest::getRemoteIPPort()
+{
+    return clientAddr_ + ":" + std::to_string(port_);
 }
 
 int HttpRequest::getContentLength()
@@ -177,20 +187,23 @@ HttpRequest::ProfilerStatus HttpRequest::httpProfiler(const std::string& buffer)
 			size_t paramStart = requestLine[2].str().find("?");
 			if (paramStart != std::string::npos)
 			{
-				requestURL_ = requestLine[2].str().substr(0, paramStart);
-				parameters_ = webstring::ParseKeyValue(requestLine[2].str().substr(paramStart + 1));
-			}
+				requestURI_ = requestLine[2].str().substr(0, paramStart);
+                queryString_ = requestLine[2].str().substr(paramStart + 1);
+                parameters_ = webstring::ParseKeyValue(queryString_);
+            }
 			else
 			{
-				requestURL_ = requestLine[2].str().substr(0, paramStart);
+				requestURI_ = requestLine[2].str().substr(0, paramStart);
 			}
 
-			version_ = requestLine[3].str();
+            requestURL_ = requestLine[2].str();
+            version_ = requestLine[3].str();
 
-			body_ = buffer.substr(requestHeaderEnd + 4, requestHeaderEnd + 4 + contentLength);
+            body_ = buffer.substr(requestHeaderEnd + 4, requestHeaderEnd + 4 + contentLength);
 		}
         return kcomplete;
     }
+	    return kbadRequest;
 }
 
 

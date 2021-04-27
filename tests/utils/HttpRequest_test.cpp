@@ -12,7 +12,7 @@ int main()
     packet += "Content-Length: " + to_string(buffer.size()) + "\r\n\r\n";
     packet += buffer;
 
-    HttpRequest request;
+    HttpRequest request("127.0.0.1", 8888);
     cout << "status: " << request.httpProfiler(packet) << endl;
     cout << "method: " << request.getMethod() << endl;
     cout << "request path: " << request.getRequestURL() << endl;
@@ -38,7 +38,7 @@ int main()
     "Accept-Encoding: gzip, deflate, br\r\n"
     "Accept-Language: zh-CN,zh;q=0.9\r\n"
     "Cookie: null\r\n\r\n";
-    HttpRequest re2;
+    HttpRequest re2("127.0.0.1", 8888);
     cout << "status: " << re2.httpProfiler(content) << endl;
     cout << "method: " << re2.getMethod() << endl;
     cout << "request path: " << re2.getRequestURL() << endl;
