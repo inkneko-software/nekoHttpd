@@ -24,7 +24,7 @@ public:
 	{
 		server_.setConnectionCallback(std::bind(&HttpServer::onConnection, this, _1));
 		server_.setMessageCallback(std::bind(&HttpServer::onMessage, this, _1, _2,_3));
-		server_.setThreadNum(4);
+		server_.setThreadNum(20);
 	}
 
 	/**

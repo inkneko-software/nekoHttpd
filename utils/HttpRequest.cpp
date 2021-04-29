@@ -1,6 +1,8 @@
 #include "HttpRequest.h"
 #include "webstring.h"
-#include <regex>
+//#include <regex>
+#include <boost/regex.hpp>
+#include <iostream>
 
 namespace nekohttpd
 {
@@ -94,7 +96,7 @@ std::string HttpRequest::getParameter(std::string name)
     auto iter = parameters_.find(name);
     if (iter != parameters_.end())
     {
-        return iter->first;
+        return webstring::urldecode(iter->second);
     }
     return "";
 }
@@ -106,7 +108,7 @@ std::vector<std::string> HttpRequest::getParameterValues(std::string name)
 
     for (auto iter = range.first; iter != range.second; ++iter)
     {
-        values.push_back(iter->second);
+        values.push_back(webstring::urldecode(iter->second));
     }
     return values;
 }
@@ -116,7 +118,7 @@ std::vector<std::string> HttpRequest::getParameterNames()
     std::vector<std::string> names;
     for (auto iter = parameters_.begin(); iter != parameters_.end(); ++iter)
     {
-        names.push_back(iter->first);
+        names.push_back(webstring::urldecode(iter->first));
     }
     return names;
 }
@@ -147,16 +149,18 @@ std::string HttpRequest::getBody()
 
 HttpRequest::ProfilerStatus HttpRequest::httpProfiler(const std::string& buffer)
 {
-	using namespace std;
-	regex requestLineFmt("^([A-Z]+?) (\\S+?) HTTP/(.+?)\r\n");
+
+	using namespace boost;
+	regex requestLineFmt("^([A-Z]+) (\\S+) HTTP/(.+?)\r\n");
 	regex requestHeaderFmt("(.+?):(.*?)\r\n");
 
 	smatch requestLine;
 	smatch requestHeaders;
 
 	//查找报文头(header)与报文体(body)的分割
-	size_t requestHeaderEnd = buffer.find("\r\n\r\n");
-	if (requestHeaderEnd != string::npos)
+    size_t requestLineEnd = buffer.find("\r\n");
+    size_t requestHeaderEnd = buffer.find("\r\n\r\n");
+    if (requestHeaderEnd != std::string::npos)
 	{
 		//判断该数据是否完整匹配一个报文请求行(request line)的开始
 		if (!regex_search(buffer,  requestLine, requestLineFmt))
@@ -165,7 +169,7 @@ HttpRequest::ProfilerStatus HttpRequest::httpProfiler(const std::string& buffer)
 		}
 
 		sregex_iterator itend;
-		for (sregex_iterator it(buffer.cbegin(), buffer.cbegin() + requestHeaderEnd + 2, requestHeaderFmt); it != itend; ++it)
+		for (sregex_iterator it(buffer.cbegin() + requestLineEnd + 2, buffer.cbegin() + requestHeaderEnd + 2, requestHeaderFmt); it != itend; ++it)
 		{
 			headers_.insert({ webstring::strip(it->operator[](1).str()), webstring::strip(it->operator[](2).str()) });
 		}
@@ -183,21 +187,21 @@ HttpRequest::ProfilerStatus HttpRequest::httpProfiler(const std::string& buffer)
 		//判断当前剩余的数据长度是否满足content-length的长度
 		if (buffer.length() - (requestHeaderEnd + 4) >= contentLength)
 		{
-			method_ = requestLine[1].str();
-			size_t paramStart = requestLine[2].str().find("?");
+			method_ = requestLine.str(1);
+			size_t paramStart = requestLine.str(2).find("?");
 			if (paramStart != std::string::npos)
 			{
-				requestURI_ = requestLine[2].str().substr(0, paramStart);
-                queryString_ = requestLine[2].str().substr(paramStart + 1);
+				requestURI_ = requestLine.str(2).substr(0, paramStart);
+                queryString_ = requestLine.str(2).substr(paramStart + 1);
                 parameters_ = webstring::ParseKeyValue(queryString_);
             }
 			else
 			{
-				requestURI_ = requestLine[2].str().substr(0, paramStart);
+				requestURI_ = requestLine.str(2).substr(0, paramStart);
 			}
 
-            requestURL_ = requestLine[2].str();
-            version_ = requestLine[3].str();
+            requestURL_ = requestLine.str(2);
+            version_ = requestLine.str(3);
 
             body_ = buffer.substr(requestHeaderEnd + 4, requestHeaderEnd + 4 + contentLength);
 		}

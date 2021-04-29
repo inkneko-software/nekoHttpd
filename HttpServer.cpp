@@ -1,5 +1,5 @@
 #include "HttpServer.h"
-#include <regex>
+#include <boost/regex.hpp>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -7,6 +7,9 @@
 #include <stdexcept>
 
 #include "utils/webstring.h"
+
+#include <muduo/net/TcpServer.h>
+#include <muduo/net/EventLoop.h>
 #include <muduo/base/Logging.h>
 #include <muduo/base/Atomic.h>
 
@@ -50,11 +53,11 @@ void HttpServer::postMapping(std::string path, std::function<void(std::shared_pt
 
 std::shared_ptr<HttpResponse> HttpServer::HttpHandler(std::shared_ptr<HttpRequest> request)
 {
+    LOG_INFO << "peer: " << request->getRemoteIPPort() << " " << request->getMethod() <<" requesting: " << request->getRequestURI();
     std::shared_ptr<HttpResponse> response(new HttpResponse);
     response->setServerSignature(SERVER_SIGNATURE);
 
     auto mapping = requestMapping_.find(request->getRequestURI());
-    LOG_INFO << "peer: " << request->getRemoteIPPort() << " requesting: " << request->getRequestURI();
     if (mapping != requestMapping_.end())
     {
         mapping->second.second(request, response);

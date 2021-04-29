@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(echo CXX)
-set(CMAKE_BUILD_TYPE "debug")
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "debug")
+project(nekoHttpd CXX)
+if(NOT ${CMAKE_BUILD_TYPE})
+  set(${CMAKE_BUILD_TYPE} "Debug")
 endif()
+MESSAGE("build type: " ${CMAKE_BUILD_TYPE})
 
 if(NOT MUDUO_PATH)
   set(MUDUO_PATH "/home/$ENV{USER}/.muduo_install")
 endif()
 
 set(CXX_FLAGS
- -g
+ #-g
  # -DVALGRIND
  # -DMUDUO_STD_STRING
  -Wall
@@ -64,7 +64,7 @@ add_library(
     ${CMAKE_SOURCE_DIR}/utils/webstring.cpp
 )
 target_link_libraries(nekohttpd ${muduo_base} ${muduo_net})
-target_link_libraries(nekohttpd pthread rt ssl crypto)
+target_link_libraries(nekohttpd pthread rt ssl crypto boost_regex)
 
 
 add_subdirectory(tests)
@@ -73,9 +73,14 @@ add_subdirectory(utils)
 
 # installation
 ## header files
-install(FILES HttpServer.h ${CMAKE_SOURCE_DIR}/utils/webstring.h ${CMAKE_SOURCE_DIR}/utils/HttpRequest.h ${CMAKE_SOURCE_DIR}/utils/HttpResponse.h
+install(FILES HttpServer.h 
 DESTINATION include/nekoHttpd/
 )
+
+install(FILES ${CMAKE_SOURCE_DIR}/utils/webstring.h ${CMAKE_SOURCE_DIR}/utils/HttpRequest.h ${CMAKE_SOURCE_DIR}/utils/HttpResponse.h
+DESTINATION include/nekoHttpd/utils/
+)
+
 install(TARGETS nekohttpd
 LIBRARY DESTINATION lib
 )

@@ -37,7 +37,9 @@ int main()
     "Sec-Fetch-Dest: document\r\n"
     "Accept-Encoding: gzip, deflate, br\r\n"
     "Accept-Language: zh-CN,zh;q=0.9\r\n"
-    "Cookie: null\r\n\r\n";
+    "Cookie: null\r\n";
+    content += "Content-Length: " + to_string(buffer.size()) + "\r\n\r\n";
+    content += buffer;
     HttpRequest re2("127.0.0.1", 8888);
     cout << "status: " << re2.httpProfiler(content) << endl;
     cout << "method: " << re2.getMethod() << endl;

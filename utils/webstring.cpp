@@ -119,7 +119,7 @@ namespace webstring
 
 	std::string tolower(const std::string& str)
 	{
-		std::string ret;
+		std::string ret(str.size(), ' ');
 		std::transform(str.cbegin(), str.cend(), ret.begin(), [](unsigned char c) { return std::tolower(c); });
 		return ret;
 	}
