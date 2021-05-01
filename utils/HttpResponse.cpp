@@ -23,13 +23,13 @@ void HttpResponse::addCookie(std::string value)
     addHeader("Set-Cookie", value);
 }
 
-void HttpResponse::setCookie(std::string key, std::string value, time_t expires_seconds, std::string domain, std::string path)
+void HttpResponse::setCookie(std::string key, std::string value, time_t expiresMilliseconds, std::string domain, std::string path)
 {
     std::string cookie = key + "=" + value;
-    if (expires_seconds != -1)
+    if (expiresMilliseconds != -1)
     {
         cookie += "; Expires=";
-        time_t expiredTimeStamp = time(nullptr) + expires_seconds;
+        time_t expiredTimeStamp = time(nullptr) + expiresMilliseconds;
         std::unique_ptr<char[]> buffer(new char[512]());
         std::size_t length = strftime(buffer.get(), 500, "%a, %d-%b-%Y %T GMT", gmtime(&expiredTimeStamp));
         cookie.append(buffer.get(), length);
