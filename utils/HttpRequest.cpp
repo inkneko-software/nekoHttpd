@@ -11,14 +11,14 @@ std::string HttpRequest::getMethod()
     return method_;
 }
 
-std::vector<std::string> HttpRequest::getCookies()
+std::map<std::string, std::string> HttpRequest::getCookies()
 {
-    std::vector<std::string> cookies;
-    for (auto iter = headers_.find("cookie"); iter != headers_.end(); ++iter)
-    {
-        cookies.push_back(iter->second);
-    }
-    return cookies;
+    return cookies_;
+}
+
+std::string HttpRequest::getCookie(std::string name)
+{
+    return cookies_[name];
 }
 
 std::string HttpRequest::getHeader(std::string name, bool caseSensitive)
@@ -204,7 +204,17 @@ HttpRequest::ProfilerStatus HttpRequest::httpProfiler(const std::string& buffer)
             version_ = requestLine.str(3);
 
             body_ = buffer.substr(requestHeaderEnd + 4, requestHeaderEnd + 4 + contentLength);
-		}
+
+            std::vector<std::string> cookies = getHeaders("cookie");
+            for (auto& cookie : cookies)
+            {
+                std::multimap<std::string, std::string> parsedCookies = webstring::ParseKeyValue(cookie, '=', ';');
+                for(auto& parsedCookie : parsedCookies)
+                {
+                    cookies_[parsedCookie.first] = parsedCookie.second;
+                }
+            }
+        }
         return kcomplete;
     }
 	    return kbadRequest;

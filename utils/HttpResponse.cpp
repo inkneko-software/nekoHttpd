@@ -1,5 +1,6 @@
 #include "HttpResponse.h"
 #include <sstream>
+#include <memory>
 namespace nekohttpd
 {
 
@@ -19,7 +20,31 @@ void HttpResponse::setHeader(std::string name, std::string value)
 
 void HttpResponse::addCookie(std::string value)
 {
-    addHeader("cookie", value);
+    addHeader("Set-Cookie", value);
+}
+
+void HttpResponse::setCookie(std::string key, std::string value, time_t expires_seconds, std::string domain, std::string path)
+{
+    std::string cookie = key + "=" + value;
+    if (expires_seconds != -1)
+    {
+        cookie += "; Expires=";
+        time_t expiredTimeStamp = time(nullptr) + expires_seconds;
+        std::unique_ptr<char[]> buffer(new char[512]());
+        std::size_t length = strftime(buffer.get(), 500, "%a, %d-%b-%Y %T GMT", gmtime(&expiredTimeStamp));
+        cookie.append(buffer.get(), length);
+    }
+
+    if (domain != "")
+    {
+        cookie += "; Domain=" + domain;
+    }
+
+    if (path != "")
+    {
+        cookie += "; Path= " + path;
+    }
+    addCookie(cookie);
 }
 
 bool HttpResponse::containsHeader(std::string name)

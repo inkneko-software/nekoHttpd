@@ -82,6 +82,22 @@ public:
 	void addCookie(std::string value);
 
 	/**
+	 * @brief
+	 * set cookie
+	 * @param key
+	 * 				the cookie name
+	 * @param value
+	 * 				the cookie value
+	 * @param expires_seconds 
+	 * 				the expired time, in million seconds
+	 * @param domain 
+	 * 				the applied domain
+	 * @param path 
+	 * 				the applied path
+	 */
+	void setCookie(std::string key, std::string value, time_t expiresMilliseconds=-1, std::string domain="", std::string path="");
+
+	/**
 	 * @brief 
 	 * Detect wheather the header exists.
 	 * @param name 

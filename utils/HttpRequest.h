@@ -20,10 +20,18 @@ public:
 
     /**
      * @brief 
-     * get cookie.
-     * @return std::vector<std::string> 
+     * get all cookies.
+     * @return std::map<std::string, std::string> all cookies
      */
-    std::vector<std::string> getCookies();
+    std::map<std::string, std::string> getCookies();
+
+    /**
+     * @brief 
+     * get specified cookie
+     * @param name the name of the cookie
+     * @return std::string cookie value
+     */
+    std::string getCookie(std::string name);
 
     /**
      * @brief
@@ -138,6 +146,7 @@ private:
     std::multimap<std::string, std::string> headers_;
     std::string body_;
     std::multimap<std::string, std::string> parameters_;
+    std::map<std::string, std::string> cookies_;
 };
 
 } // namespace nekohttpd
