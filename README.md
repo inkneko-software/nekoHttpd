@@ -44,6 +44,6 @@
    ```
 
 ##### 使用
-见[example](./example)
+暂时见[tests](./tests)
 
 所使用到的配置文件见[conf](./conf)
