@@ -79,7 +79,7 @@ public:
 
     /**
      * @brief
-     * get parameter occured in querystring and post body
+     * get parameter occured in querystring and post body. If the name conflicts, return the first value in the qureystring.
      * @param name 
      * @return std::string 
      */
@@ -120,6 +120,14 @@ public:
     //std::string getSessionId();
 
     std::istream getInputStream() = delete;
+
+    /**
+     * @brief
+     * get the content type
+     * 
+     * @return std::string content type, if no present, return empty string
+     */
+    std::string getContentType();
 
     int getContentLength();
     std::string getBody();
