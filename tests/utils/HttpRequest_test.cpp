@@ -6,7 +6,7 @@ using namespace std;
 using namespace nekohttpd;
 int main()
 {
-    string buffer = "hello server";
+    string buffer = "msg=hidden&username=inkneko&access=test";
     string packet = "GET /hello HTTP/1.1\r\n";
     packet += "Host: localhost\r\n";
     packet += "Content-Length: " + to_string(buffer.size()) + "\r\n\r\n";
@@ -21,7 +21,7 @@ int main()
 
     cout << "second-->" << endl;
 
-    string content = "GET /?msg=nihao&next=good HTTP/1.1\r\n"
+    string content = "POST /?msg=nihao&next=good HTTP/1.1\r\n"
                      "Host: www.baidu.com\r\n"
                      "Connection: keep-alive\r\n"
                      "Cache-Control: max-age=0\r\n"
@@ -37,6 +37,7 @@ int main()
                      "Sec-Fetch-Dest: document\r\n"
                      "Accept-Encoding: gzip, deflate, br\r\n"
                      "Accept-Language: zh-CN,zh;q=0.9\r\n"
+                     "Content-Type: application/x-www-form-urlencoded\r\n"
                      "Cookie: cookie1=dick; session_id=test_session_id ;_uid=12345\r\n";
     content += "Content-Length: " + to_string(buffer.size()) + "\r\n\r\n";
     content += buffer;
@@ -66,6 +67,11 @@ int main()
     {
         cout << '[' << cookie.first << ']' << "->" << cookie.second << endl;
     }
+
+    cout << "post parameter test: " << endl;
+    cout << "[username]" << re2.getParameter("username") << endl;
+    cout << "[access]" << re2.getParameter("access") << endl;
+    cout << "[msg]" << re2.getParameter("msg") << endl;
 
     return 0;
 }

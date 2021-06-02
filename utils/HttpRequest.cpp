@@ -102,7 +102,7 @@ std::string HttpRequest::getParameter(std::string name)
     if (getContentType().find("application/x-www-form-urlencoded") != std::string::npos){
         auto postParameter = webstring::ParseKeyValue(body_);
         iter = postParameter.find(name);
-        if (iter != parameters_.end())
+        if (iter != postParameter.end())
         {
             return webstring::urldecode(iter->second);
         }
@@ -110,6 +110,7 @@ std::string HttpRequest::getParameter(std::string name)
     return "";
 }
 
+//TODO: add post data process
 std::vector<std::string> HttpRequest::getParameterValues(std::string name)
 {
     std::vector<std::string> values;
