@@ -216,7 +216,7 @@ HttpRequest::ProfilerStatus HttpRequest::httpProfiler(const std::string& buffer)
                 auto postParameter = webstring::ParseKeyValue(body_);
                 for(auto& iter : postParameter)
                 {
-                    parameters_.insert(iter.first, iter.second);
+                    parameters_.insert(iter);
                 }
             }
 
