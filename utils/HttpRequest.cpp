@@ -99,18 +99,9 @@ std::string HttpRequest::getParameter(std::string name)
         return webstring::urldecode(iter->second);
     }
 
-    if (getContentType().find("application/x-www-form-urlencoded") != std::string::npos){
-        auto postParameter = webstring::ParseKeyValue(body_);
-        iter = postParameter.find(name);
-        if (iter != postParameter.end())
-        {
-            return webstring::urldecode(iter->second);
-        }
-    }
     return "";
 }
 
-//TODO: add post data process
 std::vector<std::string> HttpRequest::getParameterValues(std::string name)
 {
     std::vector<std::string> values;
@@ -201,6 +192,7 @@ HttpRequest::ProfilerStatus HttpRequest::httpProfiler(const std::string& buffer)
         //判断当前剩余的数据长度是否满足content-length的长度
         if (buffer.length() - (requestHeaderEnd + 4) >= contentLength)
         {
+            //query string的处理
             method_ = requestLine.str(1);
             size_t paramStart = requestLine.str(2).find("?");
             if (paramStart != std::string::npos)
@@ -218,6 +210,16 @@ HttpRequest::ProfilerStatus HttpRequest::httpProfiler(const std::string& buffer)
             version_ = requestLine.str(3);
 
             body_ = buffer.substr(requestHeaderEnd + 4, requestHeaderEnd + 4 + contentLength);
+            //如果请求内容的类型为application/x-www-form-urlencoded，则将请求数据添加到parameters_中
+            if (getContentType().find("application/x-www-form-urlencoded") != std::string::npos)
+            {
+                auto postParameter = webstring::ParseKeyValue(body_);
+                for(auto& iter : postParameter)
+                {
+                    parameters_.insert(iter.first, iter.second);
+                }
+            }
+
 
             std::vector<std::string> cookies = getHeaders("cookie");
             for (auto& cookie : cookies)

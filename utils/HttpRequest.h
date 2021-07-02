@@ -79,7 +79,8 @@ public:
 
     /**
      * @brief
-     * get parameter occured in querystring and post body. If the name conflicts, return the first value in the qureystring.
+     * Get parameter occured in querystring and post body(If content type is application/x-www-form-urlencoded). 
+     * If the name conflicts, return the first occurrence.
      * @param name 
      * @return std::string 
      */
