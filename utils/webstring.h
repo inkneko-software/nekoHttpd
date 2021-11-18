@@ -2,8 +2,6 @@
 #include <vector>
 #include <map>
 
-#include <boost/property_tree/ptree.hpp>
-
 namespace webstring
 {
 	std::string strip(const std::string & str, const std::string chr = " ");
@@ -64,11 +62,6 @@ namespace webstring
 	将string类型的map转化为JSON字符串
 	*/
 	std::string JsonStringify(std::map<std::string, std::string> object);
-
-	/*!
-	将ptree对象转换为字符串
-	*/
-	std::string JsonStringify(boost::property_tree::ptree propertyTree);
 
 	/*!
 	base64编解码, 自动进行补全操作

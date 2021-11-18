@@ -30,6 +30,7 @@ set(CXX_FLAGS
  # -std=c++0x
  -rdynamic
  )
+
 string(REPLACE ";" " " CMAKE_CXX_FLAGS "${CXX_FLAGS}")
 
 set(CMAKE_CXX_COMPILER "g++")
@@ -57,17 +58,16 @@ include_directories(${PROJECT_SOURCE_DIR})
 
 #generate
 add_library(
-    nekohttpd STATIC 
+    nekohttpd2.0 STATIC 
     HttpServer.cpp
     ${CMAKE_SOURCE_DIR}/utils/HttpResponse.cpp
     ${CMAKE_SOURCE_DIR}/utils/HttpRequest.cpp
     ${CMAKE_SOURCE_DIR}/utils/webstring.cpp
 )
-target_link_libraries(nekohttpd ${muduo_base} ${muduo_net})
-target_link_libraries(nekohttpd pthread rt ssl crypto boost_regex)
+target_link_libraries(nekohttpd2.0 ${muduo_base} ${muduo_net})
+target_link_libraries(nekohttpd2.0 pthread rt ssl crypto boost_regex)
 
 
-add_subdirectory(tests)
 add_subdirectory(utils)
 
 
@@ -81,6 +81,6 @@ install(FILES ${CMAKE_SOURCE_DIR}/utils/webstring.h ${CMAKE_SOURCE_DIR}/utils/Ht
 DESTINATION include/nekoHttpd/utils/
 )
 
-install(TARGETS nekohttpd
+install(TARGETS nekohttpd2.0
 LIBRARY DESTINATION lib
 )

@@ -1,12 +1,16 @@
 ## nekoHttpd 
 
-一个基于muduo网络库的多线程异步HTTP服务器，可用于微服务中HTTP接口的实现
+一个基于muduo网络库的多线程异步HTTP服务器，致力于提供易用的服务端HTTP层支持
+
+##### 项目结构
+
+
 
 ##### 依赖
 
-（安装命令基于ubuntu-18.04，依赖项的其他版本请自行尝试)
+安装命令基于ubuntu-18.04
 
-- C++ boost 1.6
+- C++ boost
 
   ```bash
   $ sudo apt-get install libboost1.65-all-dev
